@@ -14,7 +14,7 @@ class TestUserRegister(BaseCase):
 
 
     def test_create_user_with_existing_email(self):
-        email= "vinkotov@example.com"
+        email = "vinkotov@example.com"
         data = self.prepare_registration_data(email)
 
         response = MyRequests.post("/user/", data=data)
