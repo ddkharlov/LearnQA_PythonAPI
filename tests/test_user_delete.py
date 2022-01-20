@@ -1,8 +1,12 @@
 from lib.my_requests import MyRequests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
+import allure
 
+@allure.epic('Testing DELETE method')
 class TestUserDelete(BaseCase):
+    @allure.description('This case testing delete user that cant be deleted')
+    @allure.severity(allure.severity_level.NORMAL)
     def test_user_delete_with_id_2(self):
 
         # LOGIN
@@ -27,6 +31,8 @@ class TestUserDelete(BaseCase):
         Assertions.assert_code_status(response2, 400)
         Assertions.assert_response_text(response2, 'Please, do not delete test users with ID 1, 2, 3, 4 or 5.')
 
+    @allure.description('This case testing functional of delete')
+    @allure.severity(allure.severity_level.NORMAL)
     def test_user_delete_verify(self):
         # REGISTER
         register_data = self.prepare_registration_data()
@@ -67,6 +73,8 @@ class TestUserDelete(BaseCase):
         Assertions.assert_code_status(response3, 200)
         Assertions.assert_response_text(response4, 'User not found')
 
+    @allure.description("This negative case testing impossibility of deleting other user by some authorized user")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_user_delete_diff_user(self):
 
         # LOGIN FIRST USER

@@ -1,8 +1,13 @@
 from lib.my_requests import MyRequests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
+import allure
 
+
+@allure.epic("Testing functional of getting info about user")
 class TestUserGet(BaseCase):
+    @allure.description("This case testing getting info without authorization ")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_user_details_not_auth(self):
         response = MyRequests.get("/user/2")
 
@@ -11,6 +16,8 @@ class TestUserGet(BaseCase):
         Assertions.assert_json_has_not_key(response, "firstName")
         Assertions.assert_json_has_not_key(response, "lastName")
 
+    @allure.description("This case testing getting info about user after authorization ")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_get_user_details_auth_as_same_user(self):
         data = {
             'email': 'vinkotov@example.com',
@@ -28,11 +35,13 @@ class TestUserGet(BaseCase):
             f"/user/{user_id_from_auth_method}",
             headers={"x-csrf-token": token},
             cookies={"auth_sid": auth_sid}
-            )
+        )
 
         expected_fields = ["username", "email", "firstName", "lastName"]
         Assertions.assert_json_has_keys(response2, expected_fields)
 
+    @allure.description("This case testing getting info about some user from another authorized user ")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_get_user_details_auth_as_different_user(self):
         data = {
             'email': 'learnqa01192022111544@example.com',
@@ -50,7 +59,7 @@ class TestUserGet(BaseCase):
             f"/user/{user_id_from_auth_method - 1}",
             headers={"x-csrf-token": token},
             cookies={"auth_sid": auth_sid}
-            )
+        )
 
         Assertions.assert_json_has_key(response2, "username")
         Assertions.assert_json_has_not_key(response2, "email")

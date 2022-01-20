@@ -2,9 +2,13 @@ from lib.my_requests import MyRequests
 from lib.base_case import BaseCase
 from lib.assertions import Assertions
 import json
+import allure
 
 
+@allure.epic('Testing functional of edit users data')
 class TestUserEdit(BaseCase):
+    @allure.description("This case testing functional of editing firstName of user")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_edit_just_created_user(self):
         # REGISTER
         register_data = self.prepare_registration_data()
@@ -55,6 +59,8 @@ class TestUserEdit(BaseCase):
             "Wrong name of user after edit"
         )
 
+    @allure.description("This case testing editing user data by unauthorized user")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_edit_user_no_auth(self):
         #  REGISTER OF NEW USER
         register_data = self.prepare_registration_data()
@@ -110,6 +116,8 @@ class TestUserEdit(BaseCase):
             f"Wrong name of user after edit {last_name}"
         )
 
+    @allure.description("This case testing editing user data by some unauthorized user")
+    @allure.severity(allure.severity_level.CRITICAL)
     def test_user_edit_for_diff_user(self):
         #  REGISTER OF NEW USER
         register_data = self.prepare_registration_data()
@@ -172,6 +180,8 @@ class TestUserEdit(BaseCase):
             f"Username can't be edited by different user"
         )
 
+    @allure.description("This case testing editing user email from valid to invalid format")
+    @allure.severity(allure.severity_level.NORMAL)
     def test_edit_user_email(self):
         # REGISTER NEW USER
         register_data = self.prepare_registration_data()
@@ -221,6 +231,8 @@ class TestUserEdit(BaseCase):
             "Error: Invalid email format was accepted for editing"
         )
 
+    @allure.description("This case testing editing username")
+    @allure.severity(allure.severity_level.TRIVIAL)
     def test_edit_user_firstname_by_one_symbol(self):
         # REGISTER NEW USER
         register_data = self.prepare_registration_data()
@@ -237,9 +249,9 @@ class TestUserEdit(BaseCase):
 
         # LOGIN
         login_data = {
-        'email': email,
-        'password': password
-            }
+            'email': email,
+            'password': password
+        }
         response2 = MyRequests.post("/user/login", data=login_data)
 
         auth_sid = self.get_cookie(response2, "auth_sid")
@@ -253,7 +265,7 @@ class TestUserEdit(BaseCase):
             headers={"x-csrf-token": token},
             cookies={"auth_sid": auth_sid},
             data={"firstName": new_firstname}
-            )
+        )
 
         # GET
 
@@ -261,11 +273,11 @@ class TestUserEdit(BaseCase):
             f"/user/{user_id}",
             headers={"x-csrf-token": token},
             cookies={"auth_sid": auth_sid}
-            )
+        )
 
         Assertions.assert_json_value_by_name(
             response4,
             "firstName",
             new_firstname,
             "Something goes wrong"
-            )
+        )
